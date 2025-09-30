@@ -155,10 +155,18 @@ body {
 /* Main Container */
 .main-container {
   flex: 1;
-  max-width: 1200px;
+  max-width: 1400px; /* Increased from 1200px for larger desktop screens */
   width: 100%;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 2rem; /* Increased padding for desktop */
+}
+
+/* Desktop-specific improvements */
+@media (min-width: 1024px) {
+  .main-container {
+    max-width: 1600px; /* Even larger for very wide screens */
+    padding: 3rem 2rem; /* More generous padding */
+  }
 }
 
 /* Path-based Lessons Container */
@@ -166,8 +174,16 @@ body {
   position: relative;
   min-height: 1000px;
   width: 100%;
-  padding: 1rem;
+  padding: 2rem; /* Increased padding for desktop */
   overflow: hidden; /* Prevent content from going outside */
+}
+
+/* Desktop-specific lessons container improvements */
+@media (min-width: 1024px) {
+  .lessons-path-container {
+    min-height: 1200px; /* Taller for desktop */
+    padding: 3rem 2rem; /* More generous padding */
+  }
 }
 
 /* SVG Path Container */
@@ -226,6 +242,14 @@ body {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   background: transparent; /* Remove background */
   overflow: hidden; /* Ensure avatar doesn't overflow */
+}
+
+/* Desktop-specific lesson circle improvements */
+@media (min-width: 1024px) {
+  .lesson-circle {
+    width: 100px; /* Larger circles for desktop */
+    height: 100px;
+  }
 }
 
 .lesson-circle.completed {
@@ -291,6 +315,14 @@ body {
   border: 2px solid white;
 }
 
+/* Desktop-specific lesson avatar improvements */
+@media (min-width: 1024px) {
+  .lesson-avatar {
+    width: 80px; /* Larger avatars for desktop */
+    height: 80px;
+  }
+}
+
 .lesson-circle.locked .lesson-avatar {
   filter: grayscale(100%);
 }
@@ -299,6 +331,13 @@ body {
 .lesson-icon {
   font-size: 1.8rem; /* Increased icon size for better visibility */
   color: white;
+}
+
+/* Desktop-specific lesson icon improvements */
+@media (min-width: 1024px) {
+  .lesson-icon {
+    font-size: 2.2rem; /* Larger icons for desktop */
+  }
 }
 
 .lesson-circle.locked .lesson-icon {
@@ -339,6 +378,15 @@ body {
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Desktop-specific lesson info improvements */
+@media (min-width: 1024px) {
+  .lesson-info {
+    min-width: 400px; /* Larger info panels for desktop */
+    padding: 1rem 1.5rem; /* More generous padding */
+    border-radius: 16px; /* Larger border radius */
+  }
 }
 
 .lesson-info:hover {
@@ -395,6 +443,15 @@ body {
   width: 100%;
 }
 
+/* Desktop-specific lesson title improvements */
+@media (min-width: 1024px) {
+  .lesson-title {
+    font-size: 1.5rem; /* Larger text for desktop - increased from 1.3rem */
+    margin-bottom: 0.5rem; /* More spacing */
+    font-weight: 800; /* Bolder weight for better visibility */
+  }
+}
+
 /* Lesson Subtitle */
 .lesson-subtitle {
   font-size: 0.9rem;
@@ -406,12 +463,27 @@ body {
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
+/* Desktop-specific lesson subtitle improvements */
+@media (min-width: 1024px) {
+  .lesson-subtitle {
+    font-size: 1.2rem; /* Larger text for desktop - increased from 1rem */
+    font-weight: 500; /* Medium weight for better readability */
+  }
+}
+
 /* Lesson Arrow */
 .lesson-arrow {
   font-size: 1.2rem;
   color: rgba(255, 255, 255, 0.7);
   transition: color 0.3s ease;
   flex-shrink: 0;
+}
+
+/* Desktop-specific lesson arrow improvements */
+@media (min-width: 1024px) {
+  .lesson-arrow {
+    font-size: 1.6rem; /* Larger arrow for desktop - increased from 1.4rem */
+  }
 }
 
 /* Alternate positioning for left and right */
