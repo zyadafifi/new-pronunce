@@ -7,7 +7,6 @@ import { usePronunciationScoring } from "../hooks/usePronunciationScoring";
 import { useVideoPlayer } from "../hooks/useVideoPlayer";
 import { useMobileFeatures } from "../hooks/useMobileFeatures";
 import useSubtitleSync from "../hooks/useSubtitleSync";
-import MobileVideoContainer from "../components/mobile/MobileVideoContainer";
 import MobileProgressBar from "../components/mobile/MobileProgressBar";
 import MobileBackButton from "../components/mobile/MobileBackButton";
 import MobileSubtitleContainer from "../components/mobile/MobileSubtitleContainer";
@@ -151,18 +150,12 @@ const MobileLessonPage = () => {
       return false;
     }
 
-    console.log("Attempting to play video:", videoRef.current.src);
-    console.log("Video ready state:", videoRef.current.readyState);
-    console.log("Video network state:", videoRef.current.networkState);
-
     try {
       await videoRef.current.play();
-      console.log("Video play successful");
       return true;
     } catch (error) {
       console.error("Video play failed:", error.name, error.message);
       if (error.name === "NotAllowedError") {
-        console.log("Video play blocked - user interaction required");
         setShowIOSAudioOverlay(true);
         setPendingVideoPlay(true);
         return false;
@@ -180,14 +173,8 @@ const MobileLessonPage = () => {
   useEffect(() => {
     const loadLessonsData = async () => {
       try {
-        console.log("Fetching data.json...");
         const response = await fetch("/data.json");
-        console.log("Response status:", response.status);
         const data = await response.json();
-        console.log(
-          "Data loaded successfully, lessons count:",
-          data.lessons?.length
-        );
         setLessonsData(data);
       } catch (error) {
         console.error("Error loading lessons data:", error);
@@ -201,17 +188,9 @@ const MobileLessonPage = () => {
   useEffect(() => {
     if (!lessonsData) return;
 
-    console.log("Loading conversation data with params:", {
-      lessonNumber,
-      topicId,
-      conversationId,
-    });
-    console.log("Available lessons:", lessonsData.lessons?.length);
-
     const currentLesson = lessonsData.lessons.find(
       (l) => l.lessonNumber === parseInt(lessonNumber)
     );
-    console.log("Found lesson:", currentLesson?.title);
 
     if (currentLesson) {
       setLesson(currentLesson);
@@ -220,7 +199,6 @@ const MobileLessonPage = () => {
       const currentTopic = currentLesson.topics.find(
         (t) => t.id === parseInt(topicId)
       );
-      console.log("Found topic:", currentTopic?.title);
 
       if (currentTopic) {
         setTopic(currentTopic);
@@ -229,7 +207,6 @@ const MobileLessonPage = () => {
         const currentConversation = currentTopic.conversations.find(
           (c) => c.id === parseInt(conversationId)
         );
-        console.log("Found conversation:", currentConversation?.title);
 
         if (currentConversation) {
           setConversation(currentConversation);
@@ -266,17 +243,12 @@ const MobileLessonPage = () => {
         return;
       }
 
-      console.log(
-        `Attempting to load video (attempt ${attempts + 1}):`,
-        videoSrc
-      );
       setVideoLoadAttempts(attempts + 1);
       setVideoSource(videoSrc);
 
       // Set a timeout to retry if video doesn't load
       setTimeout(() => {
         if (videoRef.current && videoRef.current.readyState < 3) {
-          console.log(`Video not ready after timeout, retrying...`);
           retryVideoLoad(videoSrc, attempts + 1);
         }
       }, 3000);
@@ -296,19 +268,12 @@ const MobileLessonPage = () => {
         currentSentence.videoSrc &&
         currentSentence.videoSrc !== currentVideoSrc
       ) {
-        console.log("Setting video source:", currentSentence.videoSrc);
         setCurrentVideoSrc(currentSentence.videoSrc);
         setVideoLoadAttempts(0);
         retryVideoLoad(currentSentence.videoSrc);
 
         // Load subtitles for current sentence (mobile only)
         if (isMobile) {
-          console.log("🎬 Loading subtitles for:", {
-            lesson: parseInt(lessonNumber),
-            topic: parseInt(topicId),
-            conversation: parseInt(conversationId),
-            sentence: currentSentenceIndex + 1,
-          });
           loadSubtitlesForSentence(
             parseInt(lessonNumber),
             parseInt(topicId),
@@ -319,7 +284,6 @@ const MobileLessonPage = () => {
 
         // Wait for video to load before attempting to play
         const handleCanPlayThrough = () => {
-          console.log("Video can play through, ready for playback");
           if (hasUserInteracted || userInteractionRef.current) {
             setTimeout(() => {
               safeVideoPlay();
@@ -341,7 +305,6 @@ const MobileLessonPage = () => {
           );
         }
       } else {
-        console.warn("No video source found for current sentence");
       }
     }
   }, [
@@ -361,31 +324,19 @@ const MobileLessonPage = () => {
   const handleConversationCompleted = useCallback(
     (completedConversationId, finalScore) => {
       if (topic && lesson && lessonsData) {
-        console.log(
-          `Conversation ${completedConversationId} completed with score: ${finalScore}%`
-        );
-
         // Update topic progress based on all conversations in the topic
         const topicResult = updateTopicProgress(parseInt(topicId), topic);
-        console.log(`Topic ${topicId} progress updated:`, topicResult);
 
         // If topic is completed, update lesson progress
         if (topicResult.completed) {
-          console.log(
-            `Topic ${topicId} completed! Updating lesson progress...`
-          );
           setTopicCompletedStatus(true);
 
           const lessonResult = updateLessonProgressByTopics(
             parseInt(lessonNumber),
             lessonsData.lessons
           );
-          console.log(`Lesson ${lessonNumber} progress updated:`, lessonResult);
 
           if (lessonResult.completed) {
-            console.log(
-              `🎉 Lesson ${lessonNumber} completed! Next lesson should be unlocked.`
-            );
             setLessonCompletedStatus(true);
           }
         }
@@ -607,9 +558,6 @@ const MobileLessonPage = () => {
     // Save progress before navigating back
     if (lesson && topic && conversation) {
       // Progress is already saved through the ProgressContext
-      console.log(
-        `Lesson ${lesson.lessonNumber} completed with score: ${overallScore}%`
-      );
     }
     navigate(`/topics/${lessonNumber}`);
   };
@@ -783,10 +731,6 @@ const MobileLessonPage = () => {
             }}
             onLoadStart={handleLoadStart}
             onCanPlay={handleCanPlay}
-            onLoadedData={() => console.log("Video data loaded")}
-            onCanPlayThrough={() => console.log("Video can play through")}
-            onWaiting={() => console.log("Video waiting for data")}
-            onStalled={() => console.log("Video stalled")}
           >
             <source src={currentSentence?.videoSrc} type="video/mp4" />
             Your browser does not support the video tag.

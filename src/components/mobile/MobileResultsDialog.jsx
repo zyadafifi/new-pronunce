@@ -23,23 +23,18 @@ const MobileResultsDialog = ({
   // Play audio feedback based on score when dialog opens
   useEffect(() => {
     if (show && score >= 0 && !audioPlayed) {
-
       // Play audio feedback after a short delay
       setTimeout(() => {
         if (score >= 50) {
           // Play success sound for scores 50% and above
           const audio = new Audio("/right-answer-sfx.wav");
           audio.volume = 0.5;
-          audio
-            .play()
-            .catch((e) => console.log("Right answer audio play failed:", e));
+          audio.play().catch(() => {});
         } else {
           // Play error sound for scores less than 50%
           const audio = new Audio("/wrong-answer-sfx.wav");
           audio.volume = 0.5;
-          audio
-            .play()
-            .catch((e) => console.log("Wrong answer audio play failed:", e));
+          audio.play().catch(() => {});
         }
         setAudioPlayed(true);
       }, 500);

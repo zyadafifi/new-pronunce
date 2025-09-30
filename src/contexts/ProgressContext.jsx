@@ -121,9 +121,6 @@ class ProgressManager {
         );
 
         if (allCompleted) {
-          console.log(
-            `All conversations for lesson ${lessonId} completed, marking lesson ${lessonId} as completed`
-          );
           this.progress[lessonId] = {
             completed: true,
             completedAt: new Date().toISOString(),
@@ -342,7 +339,6 @@ class ProgressManager {
     });
 
     if (hasUpdates) {
-      console.log("Progress updated for multiple topics and lessons");
     }
   }
 
@@ -462,12 +458,6 @@ export const ProgressProvider = ({ children }) => {
 
     // Update React state to match progressManager
     setProgress(progressManager.getAllCompletionStatus());
-
-    console.log(
-      `updateConversationProgress: Conversation ${conversationId} updated - progress: ${percentage}%, score: ${score}, completed: ${
-        percentage >= 100
-      }`
-    );
   };
 
   const updateSentenceProgress = (sentenceId, completed, score) => {

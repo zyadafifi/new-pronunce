@@ -35,31 +35,19 @@ const DesktopResultsDialog = ({
 
   // Play audio feedback based on score when dialog opens
   useEffect(() => {
-    console.log("Sound effect useEffect triggered:", {
-      show,
-      score,
-      audioPlayed,
-    });
     if (show && score !== null && score !== undefined && !audioPlayed) {
-      console.log("Playing sound for score:", score);
       // Play audio feedback after a short delay
       setTimeout(() => {
         if (score < 50) {
-          console.log("Playing wrong answer sound for score:", score);
           // Play error sound for scores less than 50%
           const audio = new Audio("/wrong-answer-sfx.wav");
           audio.volume = 0.5;
-          audio
-            .play()
-            .catch((e) => console.log("Wrong answer audio play failed:", e));
+          audio.play().catch(() => {});
         } else {
-          console.log("Playing right answer sound for score:", score);
           // Play success sound for scores 50% and above
           const audio = new Audio("/right-answer-sfx.wav");
           audio.volume = 0.5;
-          audio
-            .play()
-            .catch((e) => console.log("Right answer audio play failed:", e));
+          audio.play().catch(() => {});
         }
         setAudioPlayed(true);
       }, 500);

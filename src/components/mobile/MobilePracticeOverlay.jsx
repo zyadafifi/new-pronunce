@@ -91,7 +91,6 @@ const MobilePracticeOverlay = ({
         oscillator.stop(startTime + duration);
       });
     } catch (error) {
-      console.warn("Web Audio API not available, using fallback sound");
       // Fallback: Use existing audio with different settings
       try {
         const audio1 = new Audio("/right-answer-sfx.wav");
@@ -106,9 +105,7 @@ const MobilePracticeOverlay = ({
           audio2.playbackRate = 0.8;
           audio2.play();
         }, 100);
-      } catch (fallbackError) {
-        console.warn("Audio fallback failed:", fallbackError);
-      }
+      } catch (fallbackError) {}
     }
   }, []);
 
@@ -143,16 +140,13 @@ const MobilePracticeOverlay = ({
         oscillator.stop(startTime + duration);
       });
     } catch (error) {
-      console.warn("Web Audio API not available, using fallback sound");
       // Fallback: Use existing audio with different settings
       try {
         const audio = new Audio("/right-answer-sfx.wav");
         audio.volume = 0.25;
         audio.playbackRate = 1.0; // Normal speed for submission
         audio.play();
-      } catch (fallbackError) {
-        console.warn("Audio fallback failed:", fallbackError);
-      }
+      } catch (fallbackError) {}
     }
   }, []);
 
@@ -349,7 +343,6 @@ const MobilePracticeOverlay = ({
                 requestAnimationFrame(analyzeAudio);
             }
           } catch (animationError) {
-            console.warn("Waveform animation error:", animationError);
             // Continue with fallback animation
             setWaveformBars((prev) => prev.map(() => Math.random() * 20 + 2));
             waveformAnimationRef.current = requestAnimationFrame(analyzeAudio);
@@ -383,9 +376,7 @@ const MobilePracticeOverlay = ({
         if (audioContextRef.current) {
           audioContextRef.current.close();
         }
-      } catch (cleanupError) {
-        console.warn("Cleanup error:", cleanupError);
-      }
+      } catch (cleanupError) {}
     };
   }, [audioStream]); // EXACTLY like desktop - depend on audioStream prop
 
@@ -439,14 +430,12 @@ const MobilePracticeOverlay = ({
       mediaRecorderRef.current.onstop = async () => {
         // Don't process if recording was cancelled
         if (isRecordingCancelledRef.current) {
-          console.log("🚫 Recording was cancelled, skipping processing");
           stream.getTracks().forEach((track) => track.stop());
           // Reset the cancellation flag for next recording
           isRecordingCancelledRef.current = false;
           return;
         }
 
-        console.log("✅ Recording stopped normally, processing...");
         const blob = new Blob(audioChunksRef.current, { type: mimeType });
         setRecordedBlob(blob);
 
@@ -480,8 +469,6 @@ const MobilePracticeOverlay = ({
 
   // Stop recording with submission sound
   const stopRecording = useCallback(() => {
-    console.log("📤 Submitting recording...");
-
     // Play submission sound effect
     playSubmissionSound();
 
@@ -489,7 +476,6 @@ const MobilePracticeOverlay = ({
       mediaRecorderRef.current &&
       mediaRecorderRef.current.state === "recording"
     ) {
-      console.log("🛑 Stopping MediaRecorder for submission...");
       mediaRecorderRef.current.stop();
     }
     cleanup();
@@ -499,8 +485,6 @@ const MobilePracticeOverlay = ({
 
   // Cancel recording with sound effect - desktop behavior
   const cancelRecording = useCallback(() => {
-    console.log("🗑️ Cancelling recording...");
-
     // Play cancellation sound effect
     playCancellationSound();
 
@@ -515,7 +499,6 @@ const MobilePracticeOverlay = ({
       mediaRecorderRef.current &&
       mediaRecorderRef.current.state === "recording"
     ) {
-      console.log("🛑 Stopping MediaRecorder...");
       mediaRecorderRef.current.stop();
     }
 
@@ -563,9 +546,6 @@ const MobilePracticeOverlay = ({
 
       // If API key is invalid, use fallback processing
       if (!isApiKeyValid) {
-        console.warn(
-          "AssemblyAI API key not configured, using fallback processing"
-        );
         const fallbackScore = Math.floor(Math.random() * 40) + 60; // Random score 60-100
         // Mark that user has successfully recorded for this sentence
         setHasUserRecording(true);
@@ -604,7 +584,6 @@ const MobilePracticeOverlay = ({
         const uploadData = await uploadResponse.json();
 
         // Show immediate feedback that upload is complete and processing has started
-        console.log("Audio uploaded successfully, starting transcription...");
 
         // Request transcription
         const transcriptionResponse = await fetch(

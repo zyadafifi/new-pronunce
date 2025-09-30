@@ -19,25 +19,13 @@ const MobileSubtitleContainer = ({
       : arabicText;
 
   // Debug logging
-  console.log("📱 MobileSubtitleContainer render:", {
-    englishText,
-    arabicText,
-    currentSubtitle,
-    showVideoSubtitles,
-    isMobile,
-    displayEnglish,
-    displayArabic,
-  });
 
   // Always render the container, but only show content if we have text to display
   const hasContent = displayEnglish || displayArabic;
 
   if (!hasContent) {
-    console.log("❌ No subtitle content to display");
     return null; // Don't render empty container
   }
-
-  console.log("✅ Rendering subtitle container with content");
 
   return (
     <div className="subtitle-container" id="mobileSubtitleContainer">

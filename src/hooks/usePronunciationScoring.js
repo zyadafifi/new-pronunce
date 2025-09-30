@@ -52,12 +52,8 @@ export const usePronunciationScoring = () => {
 
   const speechToText = async (audioBlob, targetText) => {
     try {
-      console.log("Starting speech recognition with audio blob:", audioBlob);
-      console.log("Target text:", targetText);
-
       // Skip Web Speech API for now as it doesn't work with audio blobs
       // Go directly to Assembly.ai
-      console.log("Using Assembly.ai for speech recognition...");
       return await useAssemblyAI(audioBlob, targetText);
     } catch (error) {
       console.error("Speech recognition error:", error);
@@ -95,17 +91,7 @@ export const usePronunciationScoring = () => {
 
   const useAssemblyAI = async (audioBlob, targetText) => {
     try {
-      console.log("Uploading audio to Assembly.ai...");
-      console.log("Audio blob size:", audioBlob.size, "bytes");
-      console.log("Audio blob type:", audioBlob.type);
-      console.log("Audio blob constructor:", audioBlob.constructor.name);
-
       // Upload audio to Assembly.ai - send as binary data
-      console.log(
-        "Using MIME type:",
-        audioBlob.type,
-        "for direct binary upload"
-      );
 
       // Send the audio blob directly as binary data
       const response = await fetch("https://api.assemblyai.com/v2/upload", {
@@ -119,8 +105,6 @@ export const usePronunciationScoring = () => {
         body: audioBlob, // Send the blob directly
       });
 
-      console.log("Assembly.ai upload response status:", response.status);
-
       if (!response.ok) {
         const errorText = await response.text();
         console.error("Assembly.ai upload failed:", errorText);
@@ -130,10 +114,8 @@ export const usePronunciationScoring = () => {
       }
 
       const { upload_url } = await response.json();
-      console.log("Audio uploaded successfully, URL:", upload_url);
 
       // Submit for transcription
-      console.log("Submitting transcription request...");
       const transcriptResponse = await fetch(
         "https://api.assemblyai.com/v2/transcript",
         {
@@ -151,11 +133,6 @@ export const usePronunciationScoring = () => {
         }
       );
 
-      console.log(
-        "Transcription submission response status:",
-        transcriptResponse.status
-      );
-
       if (!transcriptResponse.ok) {
         const errorText = await transcriptResponse.text();
         console.error("Transcription submission failed:", errorText);
@@ -165,10 +142,8 @@ export const usePronunciationScoring = () => {
       }
 
       const { id } = await transcriptResponse.json();
-      console.log("Transcription ID:", id);
 
       // Poll for results
-      console.log("Polling for transcription results...");
       let transcript = "";
       let pollCount = 0;
       const maxPolls = 30; // 30 seconds max
@@ -186,11 +161,9 @@ export const usePronunciationScoring = () => {
         );
 
         const statusData = await statusResponse.json();
-        console.log(`Poll ${pollCount + 1}: Status = ${statusData.status}`);
 
         if (statusData.status === "completed") {
           transcript = statusData.text;
-          console.log("Transcription completed:", transcript);
           break;
         } else if (statusData.status === "error") {
           console.error("Transcription failed:", statusData.error);
@@ -203,7 +176,6 @@ export const usePronunciationScoring = () => {
       }
 
       if (pollCount >= maxPolls) {
-        console.warn("Transcription polling timeout, using fallback");
         return ""; // Return empty string instead of target text
       }
 

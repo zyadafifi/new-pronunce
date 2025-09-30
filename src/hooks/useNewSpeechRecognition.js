@@ -23,8 +23,6 @@ export const useNewSpeechRecognition = () => {
   // Start recording
   const startRecording = useCallback(async () => {
     try {
-      console.log("🎤 Starting new recording system...");
-
       // Get microphone access
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: {
@@ -58,7 +56,6 @@ export const useNewSpeechRecognition = () => {
           type: "audio/webm;codecs=opus",
         });
         setRecordedAudio(audioBlob);
-        console.log("✅ Recording completed, blob size:", audioBlob.size);
       };
 
       // Start recording
@@ -75,8 +72,6 @@ export const useNewSpeechRecognition = () => {
       setTimeout(() => {
         setupAudioVisualization(stream);
       }, 100);
-
-      console.log("✅ Recording started successfully");
     } catch (error) {
       console.error("❌ Error starting recording:", error);
     }
@@ -84,8 +79,6 @@ export const useNewSpeechRecognition = () => {
 
   // Stop recording
   const stopRecording = useCallback(() => {
-    console.log("🛑 Stopping recording...");
-
     if (mediaRecorderRef.current && isRecording) {
       mediaRecorderRef.current.stop();
       setIsRecording(false);
@@ -106,8 +99,6 @@ export const useNewSpeechRecognition = () => {
           .getTracks()
           .forEach((track) => track.stop());
       }
-
-      console.log("✅ Recording stopped");
     }
   }, [isRecording]);
 
@@ -123,7 +114,6 @@ export const useNewSpeechRecognition = () => {
             type: "audio/webm;codecs=opus",
           });
           setRecordedAudio(audioBlob);
-          console.log("✅ Recording completed, blob size:", audioBlob.size);
           resolve(audioBlob);
 
           // Call original onstop if it exists
@@ -252,7 +242,6 @@ export const useNewSpeechRecognition = () => {
 
   // Delete recording
   const deleteRecording = useCallback(() => {
-    console.log("🗑️ Deleting recording...");
     setRecordedAudio(null);
     setRecordingTime(0);
     setSpeechDetected(false);

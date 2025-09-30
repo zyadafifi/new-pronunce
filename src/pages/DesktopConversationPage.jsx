@@ -118,13 +118,8 @@ const DesktopConversationPage = () => {
   useEffect(() => {
     const loadLessonsData = async () => {
       try {
-        console.log("Fetching data.json...");
         const response = await fetch("/data.json");
         const data = await response.json();
-        console.log(
-          "Data loaded successfully, lessons count:",
-          data.lessons?.length
-        );
         setLessonsData(data);
       } catch (error) {
         console.error("Error loading lessons data:", error);
@@ -137,12 +132,6 @@ const DesktopConversationPage = () => {
   // Load conversation data
   useEffect(() => {
     if (!lessonsData) return;
-
-    console.log("Loading conversation data with params:", {
-      lessonNumber,
-      topicId,
-      conversationId,
-    });
 
     const currentLesson = lessonsData.lessons.find(
       (l) => l.lessonNumber === parseInt(lessonNumber)
@@ -196,7 +185,6 @@ const DesktopConversationPage = () => {
     ) {
       const currentSentence = conversation.sentences[currentSentenceIndex];
       if (currentSentence.videoSrc) {
-        console.log("Setting video source:", currentSentence.videoSrc);
         setVideoSource(currentSentence.videoSrc);
       }
     }
@@ -206,13 +194,8 @@ const DesktopConversationPage = () => {
   const handleConversationCompleted = useCallback(
     (completedConversationId, finalScore) => {
       if (topic && lesson && lessonsData) {
-        console.log(
-          `Conversation ${completedConversationId} completed with score: ${finalScore}%`
-        );
-
         // Update topic progress
         const topicResult = updateTopicProgress(parseInt(topicId), topic);
-        console.log(`Topic ${topicId} progress updated:`, topicResult);
 
         // If topic is completed, update lesson progress
         if (topicResult.completed) {
@@ -220,7 +203,6 @@ const DesktopConversationPage = () => {
             parseInt(lessonNumber),
             lessonsData.lessons
           );
-          console.log(`Lesson ${lessonNumber} progress updated:`, lessonResult);
         }
       }
     },
@@ -369,8 +351,6 @@ const DesktopConversationPage = () => {
       playTone(400, currentTime, 0.1); // First beep - higher pitch
       playTone(300, currentTime + 0.12, 0.1); // Second beep - lower pitch, slightly delayed
     } catch (error) {
-      console.log("Web Audio API failed:", error);
-
       // Fallback: Use existing audio with different settings
       try {
         const audio1 = new Audio("/right-answer-sfx.wav");
@@ -387,9 +367,7 @@ const DesktopConversationPage = () => {
           audio2.play();
         }, 100);
       } catch (e) {
-        console.log("All audio methods failed:", e);
         // Last resort: just log
-        console.log("Recording cancelled (no audio)");
       }
     }
   };
@@ -427,8 +405,6 @@ const DesktopConversationPage = () => {
       playTone(659, currentTime + 0.05, 0.15, 0.15); // E5 - second note
       playTone(784, currentTime + 0.1, 0.2, 0.2); // G5 - final note (longer)
     } catch (error) {
-      console.log("Web Audio API failed:", error);
-
       // Fallback: Use existing audio with different settings
       try {
         const audio = new Audio("/right-answer-sfx.wav");
@@ -436,9 +412,7 @@ const DesktopConversationPage = () => {
         audio.playbackRate = 1.0; // Normal speed for submission
         audio.play();
       } catch (e) {
-        console.log("All audio methods failed:", e);
         // Last resort: just log
-        console.log("Recording submitted (no audio)");
       }
     }
   };
@@ -490,17 +464,6 @@ const DesktopConversationPage = () => {
 
   // Handle close completion modal
   const handleCloseCompletionModal = () => {
-    console.log("🎉 Navigating to topics page - Progress has been recorded");
-    console.log("Final conversation score:", overallScore);
-    console.log(
-      "Lesson:",
-      lessonNumber,
-      "Topic:",
-      topicId,
-      "Conversation:",
-      conversationId
-    );
-
     setShowCompletionModal(false);
     navigate(`/topics/${lessonNumber}`);
   };
