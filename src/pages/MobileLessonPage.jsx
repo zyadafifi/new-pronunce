@@ -648,6 +648,10 @@ const MobileLessonPage = () => {
   };
 
   const handleDeleteRecording = () => {
+    // Actually stop the recording to reset isRecording state
+    if (isRecording) {
+      stopRecording();
+    }
     clearRecording();
     // Keep practice overlay visible (like desktop) - just reset to initial state
     // The MobilePracticeOverlay will handle showing the initial controls
