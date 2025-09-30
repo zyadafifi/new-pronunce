@@ -22,7 +22,8 @@ const MobileResultsDialog = ({
 
   // Play audio feedback based on score when dialog opens
   useEffect(() => {
-    if (show && score > 0 && !audioPlayed) {
+    if (show && score >= 0 && !audioPlayed) {
+
       // Play audio feedback after a short delay
       setTimeout(() => {
         if (score >= 50) {
